@@ -1,0 +1,67 @@
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    //declarar variable
+    int opcion;
+    int x, y,suma ;
+    int resultado = 1;
+    do {
+        cout << "Menu" << endl;
+        cout << "1.Suma de dos numeos" << endl;
+        cout << "2.numeros positivos y negativos" << endl;
+        cout << "3.factorial" << endl;
+        cout << "0.salir" << endl;
+        cout << "Coloca la opcion" << endl;
+        cin >> opcion;
+
+    } while (opcion != 0);
+    switch (opcion) {
+    case 1:
+        cout << "ingrese el primer numero" << endl;
+        cin >> x;
+        cout << "ingrese el segundo numero" << endl;
+        cin >> y;
+        suma = x + y;
+        cout << "suma es " << suma << endl;
+        break;
+    case 2:
+        cout << "coloca el numero que deseas" << endl;
+        cin >> x;
+        if (x > 0) {
+            cout << "el numero es positivo" << endl;
+        }
+        if (x < 0) {
+            cout << "el numero es negativi" << endl;
+        }
+        else {
+            cout << "el numero es cero" << endl;
+        }
+
+        break;
+    case 3:
+      
+        cout << "coloca el numero del factorial"<< endl;
+        cin >> x;
+        for (int j = 2; j<=x; j++) {
+            resultado = resultado * j;
+           
+        }
+        cout << "el numero del factorial es" << resultado << endl;
+        break;
+    case 0:
+        cout << "salir" << endl;
+    }
+  
+    }
+
+// Ejecutar programa: Ctrl + F5 o menú Depurar > Iniciar sin depurar
+// Depurar programa: F5 o menú Depurar > Iniciar depuración
+
+// Sugerencias para primeros pasos: 1. Use la ventana del Explorador de soluciones para agregar y administrar archivos
+//   2. Use la ventana de Team Explorer para conectar con el control de código fuente
+//   3. Use la ventana de salida para ver la salida de compilación y otros mensajes
+//   4. Use la ventana Lista de errores para ver los errores
+//   5. Vaya a Proyecto > Agregar nuevo elemento para crear nuevos archivos de código, o a Proyecto > Agregar elemento existente para agregar archivos de código existentes al proyecto
+//   6. En el futuro, para volver a abrir este proyecto, vaya a Archivo > Abrir > Proyecto y seleccione el archivo .sln
