@@ -1,0 +1,38 @@
+#Menu Recursivo 
+#Autor :Kaaiya Alarcon Sibauty
+def Factorial(numero):
+        if numero==0 or numero==1:
+            return 1;
+        else: 
+            return numero*Factorial(numero-1)
+def Aritmetica(numero,numero1):
+        if numero1==0:
+            return 1
+        elif(numero1%2!=0):
+           X=numero**numero1
+           S=X/Factorial(numero1)
+           return S+Aritmetica(numero,numero1-1)
+def Suma(numero):
+    if numero == 0:
+        return 0
+
+    if numero % 2 == 0:
+        return -numero + Suma(numero - 1)
+    else:
+        return numero + Suma(numero - 1)
+print("Bienvenido al menu recursivo de KAI")
+print("LAS OPCIONES SON:")
+print("1.-Factorial")
+print("2.-Operacion aritmetica :	S= X/1! -  X^3/3! + X^5/5! ")
+print("3.- Calcular la siguiente suma:Sum = 1 - 2 + 3 - 4 + 5 - .........+/- N.")
+opcion=int(input("Por favor,selecciona una opcion"))
+if opcion==1:
+    numero=int(input("Coloca el numero de que deseas conocer el factorial:"))
+    print ("El factorial del numero que acaba de ingresar es:",Factorial(numero))
+elif opcion==2:
+    numero=int(input("Coloca por favor el numero que desea en el numerador:"))
+    numero1=int(input("Coloca el numero que desea en el denominador:"))
+    print("El resultado de la operacion es:",Aritmetica(numero,numero1))
+elif opcion==3:
+    numero=int(input("Coloca el numero que deseas que se realize la operacion:"))
+    print("El resultado de la operacion es:",Suma(numero))
