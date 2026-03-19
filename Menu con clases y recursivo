@@ -1,0 +1,64 @@
+// menu recursivo.cpp : Este archivo contiene la función "main". La ejecución del programa comienza y termina ahí.
+//
+
+#include #include #define MAX 10
+using namespace std;
+void sumadetres(int n, int num);
+void cargar(int vec[], int n);
+void mostrar(int v[], int n);
+void cargarmatizr(int ma[MAX][MAX], int n,int m,int s);
+int main()
+{
+int opcion, n, n2, m, maz[MAX][MAX],vec[MAX];
+do {
+cout << "MENU" << endl;
+cout << "1.Serie: ";
+cout << "2. Cargar vector";
+cout << "3. Cargar matriz:";
+cout << "0.salir";
+switch(opcion){
+case 1:
+cout << "Por favor coloca la cantidad de la serie: ";
+cin >> n;
+sumadetres(n,1);
+break;
+case 2:
+cout << "Por favor coloca la cantidad de la serie: ";
+cin >> n;
+cargar(vec, n);
+case 3:
+cout << "Por favor coloca la cantidad de la serie: ";
+cin >> n;
+cout << "Coloca la cantidad de la matriz (fila)x(columna);";
+cout << "FILA:";
+cin >> n2;
+cout << "COLUMNA:";
+cin >> m;
+
+cargarmatizr(maz, n2, m, n);
+}
+
+} while (opcion != 0);
+}
+void sumadetres(int n,int num) {
+if (n == 1) {
+cout << "1";
+return;
+}
+else {
+cout << "num" << endl;
+}
+sumadetres(n - 1, num + 3);
+}
+void cargar(int vec[], int n) {
+for (int j = 1; j < n; j++) {
+for (int i = 0; i < n; i++) {
+vec[j] = i + 3;
+}
+}
+}
+void mostrar(int vec[], int n) {
+for (int i = 0; i < n; i++) {
+cout << vec[i]< }
+}
+void cargarmatizr(int ma[MAX][MAX], int n, int m, int s){}
