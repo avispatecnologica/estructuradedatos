@@ -1,0 +1,162 @@
+#pragma once
+#include <iostream>
+#include <stdlib.h>
+
+using namespace std;
+class Nodo
+{
+public:
+	int idLibro;
+	string titulo;
+	Nodo* sig;
+};
+#pragma once
+#include <iostream>
+#include <stdlib.h>
+#include "Nodo.h"
+class Pila
+{
+		Nodo* inicio;
+	public:
+		Pila() {
+			inicio = NULL;
+		}
+		void push();
+		void pop();
+		void show();
+		void top();
+		void size();
+	};
+#include "Pila.h"
+#include "Nodo.h"
+#include <string>
+//pila.cpp
+void Pila::push() {
+    int id;
+    string tituloLibro;
+    Nodo* aux = new Nodo;
+
+    system("cls");
+    cout << "Ingresa el ID del libro: ";
+    cin >> id;
+    cout << "Ingresa el titulo del libro: ";
+    cin.ignore();
+    getline(cin, tituloLibro);
+
+    aux->idLibro = id;
+    aux->titulo = tituloLibro;
+    aux->sig = NULL;
+
+    if (inicio != NULL)
+        aux->sig = inicio;
+
+    inicio = aux;
+
+    cout << "Libro agregado a la pila!\n";
+    system("pause");
+}
+
+void Pila::pop() {
+    if (inicio == NULL) {
+        system("cls");
+        cout << "\nLa pila de libros esta vacia!\n\n";
+        system("pause");
+    }
+    else {
+        Nodo* temp = inicio;
+        inicio = inicio->sig;
+
+        system("cls");
+        cout << "\nLibro eliminado: "
+            << temp->idLibro << " - " << temp->titulo << "\n" << endl;
+
+        delete temp;
+        system("pause");
+    }
+}
+
+void Pila::show() {
+    Nodo* aux = inicio;
+
+    if (inicio == NULL) {
+        system("cls");
+        cout << "\nNo hay libros en la pila!\n\n";
+        system("pause");
+    }
+    else {
+        system("cls");
+        cout << "Lista de libros:\n" << endl;
+
+        while (aux != NULL) {
+            cout << aux->idLibro << " - " << aux->titulo << "\n" << endl;
+            aux = aux->sig;
+        }
+
+        system("pause");
+    }
+}
+
+void Pila::top() {
+    if (inicio == NULL) {
+        system("cls");
+        cout << "\nLa pila esta vacia!\n\n";
+        system("pause");
+    }
+    else {
+        system("cls");
+        cout << "Libro en el TOP:\n" << endl;
+        cout << inicio->idLibro << " - " << inicio->titulo << "\n" << endl;
+        system("pause");
+    }
+}
+
+void Pila::size() {
+    Nodo* aux = inicio;
+    int contador = 0;
+
+    while (aux != NULL) {
+        contador++;
+        aux = aux->sig;
+    }
+
+    system("cls");
+    cout << "Cantidad de libros: " << contador << "\n" << endl;
+    system("pause");
+}
+#include "Nodo.h"
+#include "Pila.h"
+#include <iostream>
+
+int main() {
+    Pila l;
+    int opcion;
+
+    do {
+        system("cls");
+        cout << "[:] Pila de Libros" << endl;
+        cout << "[1] Agregar libro" << endl;
+        cout << "[2] Eliminar libro" << endl;
+        cout << "[3] Mostrar libros" << endl;
+        cout << "[4] Ver ultimo libro (TOP)" << endl;
+        cout << "[5] Cantidad de libros" << endl;
+        cout << "[0] Salir" << endl;
+        cout << "\nIngresa tu opcion: ";
+        cin >> opcion;
+
+        switch (opcion) {
+        case 1: l.push(); break;
+        case 2: l.pop(); break;
+        case 3: l.show(); break;
+        case 4: l.top(); break;
+        case 5: l.size(); break;
+        case 0: return 0;
+        default:
+            cout << "Opcion invalida.\n";
+            system("pause");
+        }
+
+    } while (opcion != 0);
+
+    return 0;
+}
+
