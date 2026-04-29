@@ -1,0 +1,140 @@
+/ Colacirulardinamica.cpp : Este archivo contiene la función "main". La ejecución del programa comienza y termina ahí.
+//
+#include <iostream>
+#include"Nodo.h"
+#include"colacircular.h"
+#include<string>
+using namespace std;
+
+int main() {
+   colacircular cola;
+
+    cola.encolar("Juan");
+    cola.encolar("Maria");
+    cola.encolar("Pedro");
+
+    cola.mostrar();
+
+    cout << "Atendiendo: " << cola.desencolar() << endl;
+    cola.mostrar();
+
+    cola.encolar("Luis");
+    cola.mostrar();
+
+    cout << "Atendiendo: " << cola.desencolar() << endl;
+    cout << "Atendiendo: " << cola.desencolar() << endl;
+    cola.mostrar();
+
+    return 0;
+}
+#pragma once
+#include<string>
+#include<iostream>
+using namespace std;
+class Nodo
+{
+public:
+    string valor;
+    Nodo* sig;
+    Nodo(string v);
+};
+
+#pragma once
+#include"Nodo.h"
+#include <iostream>
+#include<string>
+using namespace std;
+class colacircular
+{
+private:
+    Nodo* frente;
+    Nodo* final;
+
+public:
+    colacircular() : frente(nullptr), final(nullptr) {}
+
+    ~colacircular() {
+        while (!estaVacia()) {
+            desencolar();
+        }
+    }
+        // Encola un nuevo elemento
+    void encolar(const string& valor);
+           
+
+        // Desencola y devuelve el valor
+    string desencolar();
+
+        // ¿La cola está vacía?
+    bool estaVacia();
+           
+        
+
+        // Mostrar elementos recorriendo la cola
+    void mostrar();
+};
+
+#include <iostream>
+#include"colacircular.h"
+#include<string>
+using namespace std;
+
+void  colacircular::encolar(const string& valor) {
+    Nodo* nuevo = new Nodo(valor);
+
+    if (!frente) {
+        // Primer nodo: apunta a sí mismo
+        frente = final = nuevo;
+        nuevo->sig = nuevo;
+    }
+    else {
+        nuevo->sig = frente;
+        final->sig = nuevo;
+        final = nuevo;
+    }
+}
+
+// Desencola y devuelve el valor
+string colacircular::desencolar() {
+    if (estaVacia()) return "COLA VACÍA";
+
+    string dato;
+    if (frente == final) {
+        // Solo un elemento
+        dato = frente->valor;
+        delete frente;
+        frente = final = nullptr;
+    }
+    else {
+        Nodo* temp = frente;
+        dato = temp->valor;
+        frente = frente->sig;
+        final->sig = frente;
+        delete temp;
+    }
+    return dato;
+}
+
+// ¿La cola está vacía?
+bool colacircular::estaVacia() {
+    return frente == nullptr;
+}
+
+// Mostrar elementos recorriendo la cola
+void colacircular::mostrar() {
+    if (estaVacia()) {
+        cout << "Cola vacía.\n";
+        return;
+    }
+
+    Nodo* actual = frente;
+    cout << "Cola: ";
+    do {
+        cout << "[" << actual->valor << "] ";
+        actual = actual->sig;
+    } while (actual != frente);
+    cout << endl;
+}
+#include "Nodo.h"
+
+Nodo::Nodo(string v) : valor(v), sig(nullptr) {}
