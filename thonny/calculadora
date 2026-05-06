@@ -1,0 +1,197 @@
+import tkinter as tk
+from tkinter import ttk, messagebox
+
+# ─── Colores ───────────────────────────────────────────────
+BG         = "#F8F7F4"
+CARD_BG    = "#FFFFFF"
+BORDER     = "#E0DED8"
+TEXT_MAIN  = "#1A1A1A"
+TEXT_MUTED = "#6B6B68"
+ACCENT     = "#1A1A1A"
+RESULT_BG  = "#F0EEE8"
+ERROR_BG   = "#FEF2F2"
+ERROR_FG   = "#B91C1C"
+
+# ──────────────────────────────────────────────────────────
+def calcular(modo):
+    try:
+        monto    = float(entry_monto.get())
+        compra   = float(entry_compra.get())
+        venta    = float(entry_venta.get())
+        com_pct  = float(entry_comision.get())
+
+        if any(v <= 0 for v in [monto, compra, venta, com_pct]):
+            raise ValueError
+
+        com = com_pct / 100
+
+        if modo == "bs_a_soles":
+            usdt    = monto / compra
+            bruto   = usdt * venta
+            comision = bruto * com
+            neto    = bruto - comision
+
+            lbl_r1.config(text=f"Bs {monto:,.2f}")
+            lbl_r2.config(text=f"{usdt:.4f} USDT")
+            lbl_r3.config(text=f"S/ {comision:,.2f}  ({com_pct:.1f}%)")
+            lbl_r4.config(text=f"S/ {neto:,.2f}", font=("Segoe UI", 14, "bold"), fg=ACCENT)
+            lbl_dir.config(text="Bolivianos  →  Soles peruanos")
+
+        else:  # soles_a_bs
+            usdt    = monto / venta
+            bruto   = usdt * compra
+            comision = bruto * com
+            total   = bruto + comision
+
+            lbl_r1.config(text=f"S/ {monto:,.2f}")
+            lbl_r2.config(text=f"{usdt:.4f} USDT")
+            lbl_r3.config(text=f"Bs {comision:,.2f}  ({com_pct:.1f}%)")
+            lbl_r4.config(text=f"Bs {total:,.2f}", font=("Segoe UI", 14, "bold"), fg=ACCENT)
+            lbl_dir.config(text="Soles peruanos  →  Bolivianos")
+
+        frame_resultado.pack(fill="x", padx=20, pady=(0, 20))
+        frame_error.pack_forget()
+
+    except ValueError:
+        frame_error.pack(fill="x", padx=20, pady=(0, 10))
+        frame_resultado.pack_forget()
+
+
+def campo(parent, etiqueta, badge, placeholder):
+    """Crea un campo de entrada con etiqueta y badge de moneda."""
+    f = tk.Frame(parent, bg=CARD_BG, bd=0)
+    tk.Label(f, text=etiqueta, font=("Segoe UI", 9, "bold"),
+             bg=CARD_BG, fg=TEXT_MUTED).pack(anchor="w")
+    row = tk.Frame(f, bg=CARD_BG)
+    row.pack(fill="x")
+    tk.Label(row, text=badge, font=("Courier New", 12, "bold"),
+             bg=CARD_BG, fg=TEXT_MUTED, width=4).pack(side="left")
+    e = tk.Entry(row, font=("Courier New", 13), bd=0, bg=CARD_BG,
+                 fg=TEXT_MAIN, insertbackground=TEXT_MAIN)
+    e.insert(0, placeholder)
+    e.pack(side="left", fill="x", expand=True)
+    tk.Frame(f, bg=BORDER, height=1).pack(fill="x", pady=(4, 0))
+    return f, e
+
+
+# ─── Ventana principal ────────────────────────────────────
+root = tk.Tk()
+root.title("Calculadora Bs · USDT · S/")
+root.geometry("460x620")
+root.resizable(False, False)
+root.configure(bg=BG)
+
+# ─── Encabezado ───────────────────────────────────────────
+tk.Label(root, text="Calculadora de cambio",
+         font=("Segoe UI", 17, "bold"),
+         bg=BG, fg=TEXT_MAIN).pack(pady=(24, 2))
+tk.Label(root, text="Bs · USDT · S/  con comisión incluida",
+         font=("Segoe UI", 10),
+         bg=BG, fg=TEXT_MUTED).pack(pady=(0, 16))
+
+# ─── Fila de monedas ──────────────────────────────────────
+frame_flow = tk.Frame(root, bg=RESULT_BG, pady=8)
+frame_flow.pack(fill="x", padx=20, pady=(0, 16))
+for txt in ["Bs Bolivianos", "⇄", "USDT", "⇄", "S/ Soles"]:
+    tk.Label(frame_flow, text=txt,
+             font=("Segoe UI", 10, "bold" if txt != "⇄" else "normal"),
+             bg=RESULT_BG, fg=TEXT_MAIN if txt != "⇄" else TEXT_MUTED
+             ).pack(side="left", expand=True)
+
+# ─── Tarjeta de campos ────────────────────────────────────
+card = tk.Frame(root, bg=CARD_BG, bd=1, relief="flat",
+                highlightbackground=BORDER, highlightthickness=1)
+card.pack(fill="x", padx=20, pady=(0, 12))
+
+# Monto
+f_monto, entry_monto = campo(card, "Monto a convertir", "Bs", "")
+f_monto.pack(fill="x", padx=16, pady=(14, 10))
+
+sep = tk.Frame(card, bg=BORDER, height=1)
+sep.pack(fill="x", padx=16)
+
+# Fila compra / venta
+fila = tk.Frame(card, bg=CARD_BG)
+fila.pack(fill="x", padx=16, pady=10)
+
+f_compra, entry_compra = campo(fila, "Compra 1 USDT en Bs", "Bs", "6.97")
+f_compra.pack(side="left", expand=True, fill="x", padx=(0, 8))
+
+f_venta, entry_venta = campo(fila, "Venta 1 USDT en S/", "S/", "3.75")
+f_venta.pack(side="left", expand=True, fill="x")
+
+sep2 = tk.Frame(card, bg=BORDER, height=1)
+sep2.pack(fill="x", padx=16)
+
+# Comisión editable
+f_com = tk.Frame(card, bg=CARD_BG)
+f_com.pack(fill="x", padx=16, pady=(10, 14))
+tk.Label(f_com, text="Comisión del servicio",
+         font=("Segoe UI", 9, "bold"), bg=CARD_BG, fg=TEXT_MUTED).pack(side="left")
+entry_comision = tk.Entry(f_com, font=("Courier New", 12), bd=0,
+                          bg=CARD_BG, fg=TEXT_MAIN, width=5,
+                          justify="right", insertbackground=TEXT_MAIN)
+entry_comision.insert(0, "10")
+entry_comision.pack(side="right")
+tk.Label(f_com, text="%", font=("Segoe UI", 11),
+         bg=CARD_BG, fg=TEXT_MUTED).pack(side="right")
+
+# ─── Botones ──────────────────────────────────────────────
+frame_btns = tk.Frame(root, bg=BG)
+frame_btns.pack(fill="x", padx=20, pady=(0, 12))
+
+btn_bs = tk.Button(frame_btns, text="Bs  →  S/",
+                   font=("Segoe UI", 11, "bold"),
+                   bg=ACCENT, fg="#FFFFFF", bd=0, relief="flat",
+                   activebackground="#333333", activeforeground="#FFFFFF",
+                   cursor="hand2", pady=10,
+                   command=lambda: calcular("bs_a_soles"))
+btn_bs.pack(side="left", expand=True, fill="x", padx=(0, 6))
+
+btn_sol = tk.Button(frame_btns, text="S/  →  Bs",
+                    font=("Segoe UI", 11, "bold"),
+                    bg=CARD_BG, fg=ACCENT, bd=1, relief="flat",
+                    highlightbackground=BORDER, highlightthickness=1,
+                    activebackground=RESULT_BG, activeforeground=ACCENT,
+                    cursor="hand2", pady=10,
+                    command=lambda: calcular("soles_a_bs"))
+btn_sol.pack(side="left", expand=True, fill="x")
+
+# ─── Error ────────────────────────────────────────────────
+frame_error = tk.Frame(root, bg=ERROR_BG,
+                       highlightbackground="#FECACA", highlightthickness=1)
+tk.Label(frame_error, text="⚠  Ingresa valores numéricos válidos en todos los campos.",
+         font=("Segoe UI", 10), bg=ERROR_BG, fg=ERROR_FG,
+         wraplength=380, justify="left", pady=8).pack(padx=12)
+
+# ─── Resultado ────────────────────────────────────────────
+frame_resultado = tk.Frame(root, bg=RESULT_BG,
+                           highlightbackground=BORDER, highlightthickness=1)
+
+lbl_dir = tk.Label(frame_resultado, text="",
+                   font=("Segoe UI", 9, "bold"),
+                   bg=RESULT_BG, fg=TEXT_MUTED)
+lbl_dir.pack(anchor="w", padx=16, pady=(12, 8))
+
+def fila_res(icono, etiqueta, var_lbl, negrita=False):
+    f = tk.Frame(frame_resultado, bg=RESULT_BG)
+    f.pack(fill="x", padx=16, pady=3)
+    tk.Label(f, text=f"{icono}  {etiqueta}",
+             font=("Segoe UI", 10), bg=RESULT_BG, fg=TEXT_MUTED).pack(side="left")
+    lbl = tk.Label(f, text="—",
+                   font=("Segoe UI", 11, "bold") if negrita else ("Courier New", 11),
+                   bg=RESULT_BG, fg=TEXT_MAIN)
+    lbl.pack(side="right")
+    return lbl
+
+lbl_r1 = fila_res("💰", "Monto ingresado", None)
+lbl_r2 = fila_res("🔗", "Equivale en USDT", None)
+lbl_r3 = fila_res("📋", "Comisión", None)
+
+tk.Frame(frame_resultado, bg=BORDER, height=1).pack(fill="x", padx=16, pady=6)
+
+lbl_r4 = fila_res("✅", "Total final", None, negrita=True)
+tk.Frame(frame_resultado, bg=RESULT_BG, height=12).pack()
+
+# ─── Iniciar ──────────────────────────────────────────────
+root.mainloop()
